@@ -1,0 +1,564 @@
+﻿
+一、创建文件夹 ✔
+	mkdir>miaov
+
+----------------------------------------------------------------------
+
+二、创建文件 ✔
+	type nul>a.txt
+
+----------------------------------------------------------------------
+
+三、查看配置文件 ✔
+	git config --global -l
+	git config --global --list
+	参数 --list, 简写 -l
+
+----------------------------------------------------------------------
+
+四、全局初始化的用户名和邮箱（commit之前） ✔
+	1、配置
+	git config --global user.email "liuhaoa@lionbridgecapital.cn"
+	git config --global user.name "liuhao"
+
+	2、重置
+	git config --global --replace-all user.email "输入你的邮箱" 
+	git config --global --replace-all user.name "输入你的用户名"
+
+----------------------------------------------------------------------
+
+五、每次都要输入add命令好麻烦 ✔
+	git commit -a -m '描述'
+	git commit -am '本次提交描述'
+
+	相当于：
+	git commit .
+	git commit -m '描述'
+
+----------------------------------------------------------------------	
+
+六、描述信息错误重置 ✔
+	git commit -a -m '描述' --amend
+
+----------------------------------------------------------------------
+
+七、删除文件 ✔
+	1、基本
+	git rm <file>	
+
+	2、删除Git仓库中的，保留工作目录中的文件
+	- git rm --cache <file>
+	作用：从版本库中删除，单独提交		
+
+	3、强制删除（没有commit到本地仓库）
+	git rm -f <file>
+
+----------------------------------------------------------------------
+
+八、移动文件（重命名文件）✔
+	git mv file_from file_to
+
+----------------------------------------------------------------------
+
+九、查看命令（一） ✔
+	git status -s 
+	git status --short
+
+	
+	??	未追踪文件
+	A	添加到暂存区的
+	 M	被修改但是未放入暂存区
+	MM	修改后放入暂存区，并且又再次修改
+	M	被修改后放入暂存区
+
+----------------------------------------------------------------------
+
+十、查看命令（二） ✔
+	1、比较工作区与暂存区
+	git diff
+
+	2、比较暂存区与最新本地版本库
+	git diff --cached
+	git diff --staged
+
+	3、比较工作区与最新本地版本库
+	git diff HEAD
+
+	4、查看日志
+	git log
+		git log -p 	// 查看最近一条提交的详细信息
+		git log -2 	// 查看最近的n条信息
+		git log --stat	// 列出所被修改的文件，以及简略的统计信息
+
+	4、打印格式
+	git log --pretty 设置打印内容的格式
+	git log --pretty=oneline	只打印hash和描述
+	git log --pretty=format:"%H %h" 
+		前者打印完整的Hash值，
+		后者打印简短的Hash值
+
+	具体参考：
+		H:\9-妙味课堂源码-20140920\53- git 入门与实践\8-强大的查看命令：diff和log\图解\2-format的常用选项.jpg
+
+----------------------------------------------------------------------
+
+十一、提交对象 ✔
+	1、Git保存的并不是文件的变化或者差异，而是一系列的不同时刻的文件快照
+
+	2、提交操作时Git会保存一个提交对象，该对象中包含一个指向暂存内容快照的指针、
+		作者姓名、邮箱、父对象指针以及提交输入信息
+	
+	3、首次提交的对象没有父对象
+		普通的提交有一个父对象
+		多个分支合并的有多个父对象
+
+----------------------------------------------------------------------
+
+十二、分支原理 ✔
+	1、Git的分支本质上仅仅是指向提交对象的可变指针
+	2、Git默认分支名：master，它会在每一次的提交中自动前移
+
+----------------------------------------------------------------------
+
+十三、分支命令 ✔
+	1、查看分支
+		git branch
+
+	2、创建分支
+		git branch <branch>
+
+	3、切换分支
+		git checkout <branch>
+
+	4、创建分支与切换分支的简化操作
+		git checkout -b <branch>
+	
+	5、合并分支
+		git checkout master
+		git merge <branch>
+
+	6、删除分支
+		git branch -d <branch>
+
+		没有合并过的分支是删除不了的
+		git branch -D branch3
+
+----------------------------------------------------------------------
+
+十四、解决分支冲突 ✔
+	git merge branch1
+	git add . 	
+	git commit -m '这是我要合并的最终内容'
+
+----------------------------------------------------------------------
+
+十五、取消合并冲突的分支 ✔
+	git merge --abort	
+	
+----------------------------------------------------------------------
+
+十六、查看日志 ✔
+	git log --oneline --decorate --all --graph
+
+		--oneline 简短
+		--decorate 包含分支的信息
+		--all 包含所有分支的信息
+		--graph 树状
+
+----------------------------------------------------------------------
+
+十七、快速前移是不友好的 ✔
+	git checkout master
+	git merge --no-ff -m '这是一次合并操作' branch1
+
+----------------------------------------------------------------------
+
+十八、撤销大集合 ✔
+	1、保留工作区内容，删除暂存区（或版本库）内容
+		git rm --cached a.txt
+
+	2、撤销对文件的修改，注意这次修改是还没有加入暂存区的修改才行
+		git checkout -- <file>
+
+	3、取消添加到暂存区的内容
+		git reset HEAD <file>
+
+		如果是第一次被添加到管理中，是没有必要用reset的
+		直接用rm就可以了，因为里面还没有任何东西
+
+	4、修改已提交提示信息，注意：上次commit提交后，一定不能再做别的事情	
+		git commit -m '新建一个b文件' --amend
+
+	5、修改紧挨着的一次的提交与本次提交合并
+		git commit --amend
+		亦可以：git commit -m '可以修改信息' --amend
+
+	7、git checkout命令详解：
+		http://www.softwhy.com/article-8498-1.html
+
+----------------------------------------------------------------------
+
+十九、reset与checkout ✔
+
+	1、二者本质区别
+		（1）checkout 会改变HEAD指向，而不会影响当前分支的指向
+		（2）而reset不但会改变HEAD指向，而且还会带上当前分支的指向
+	
+	2、reset用来撤销commit
+		git reset "HEAD^^" 	
+
+	3、查看历史提交记录
+		git reflog ✔
+
+	4、重置到Hash值6d7cbfc这个位置上去
+		git reset 6d7cbfc ✔
+		git reset 6d7cbfc --hard ✔
+
+		本地回滚后，强推到远程
+			git push origin HEAD --force
+		参考：https://www.cnblogs.com/spring87/p/7867435.html
+
+	5、Reset的本质
+		（1）重置工作目录，丢失暂存（尽量避免使用） 
+			git reset "HEAD^" --hard
+
+		（2）保留工作目录，与原分支差异将放到暂存区
+			git reset "HEAD^" --soft
+
+		（3）保留工作目录，并且清空暂存区
+			git reset "HEAD^" --mixed
+
+----------------------------------------------------------------------
+
+二十、git存储及操作 ✔
+	1、存储默认情况下，存储的是在暂存区中的内容以及工作目录中修改的文件
+
+	2、存储
+		git stash
+
+	3、打印存储列表
+		git stash list
+
+	4、取存储内容		
+		git stash apply
+
+	如果取出来也在暂存区
+		git stash apply --index
+
+		如果取出来也在暂存区
+		git stash apply --index
+
+	5、移除存储
+		git stash drop
+
+	6、可以用名字取出：
+		git stash apply stash@{0}
+		git stash apply stash@{0} --index
+
+	7、可以用名字移除存储
+		git stash drop stash@{0}
+
+	8、存储未追踪的文件
+		git stash -u	
+
+----------------------------------------------------------------------
+
+二十一、rebase变基 ✔
+
+	1、将一个分支的内容都移至另一个分支上
+	
+	2、rebase合并与merge合并不同
+		（1）rebase是把你所要合并进去的分支作为当前所在的分支
+		（2）HEAD在branch1身上
+
+	3、rebase好用还是merge好用？
+		（1）看应用场景
+		（2）如果希望当前提交是注重过程的，用rebase
+		（3）如果希望当前提交是注重结果的（过程无所谓，以后也不会再去调），用merge
+
+	4、命令
+		git checkout branch1 	// 所要合并进去的分支
+		git rebase master	// 将master作为基点
+	
+		git checkout master 	// 真正合并还要切换到主分支
+		git merge branch1	// 合并分支
+		
+
+----------------------------------------------------------------------
+
+二十二、别名 ✔
+
+	1、全局配置
+		git config --global alias.co checkout
+
+	2、本地配置
+		git config --local alias.co checkout
+
+		也就是说，当前的co = checkout
+
+	3、git checkout branch
+		现在：git co master
+
+	4、命令行相关的视频：
+		https://study.miaov.com/study/show/chapter/504
+
+----------------------------------------------------------------------
+
+二十三、配置忽略文件 ✔
+
+	（一）创建.gitignore（type nul>.gitignore）
+
+	（二）# 相当于注释
+
+	（三）规则
+
+		1、* 匹配零个或多个任意字符		
+
+		2、[abc] 代表a,b,c中任一字符即可
+
+		3、? 只匹配一个任意字符
+
+			例如：?a 
+			也就是a前面只能接一个任意字符
+
+		4、** 表示匹配任意中间目录
+
+		5、[0-9] 这个范围都可以匹配
+
+		6、具体配置：如忽略*.doc，.gitignore
+
+			（1）在.gitignore中		
+				*.doc
+				.gitignore
+
+			（2）git status
+
+		7、参考：
+			（1）git设置忽略文件和目录
+				https://www.cnblogs.com/wangmo/p/7737109.html
+
+			（2）.gitignore忽略规则常用示例
+				https://github.com/github/gitignore/blob/master/Java.gitignore
+
+----------------------------------------------------------------------
+
+二十四、tag标签 ✔
+	1、标签指向一个commit对象
+
+	2、设置版本
+		git tag v1.0
+
+	3、查看版本
+		git tag
+
+	4、查看
+		git log --oneline
+
+	5、给已知hash值的版本打标签	
+		git tag v0.2 e67d3c9
+
+	6、加标签描述
+		git tag -a v0.3 -m '这是很关键的3' d800b88
+
+	7、查看描述信息
+		git show v0.3
+
+	8、删除标签
+		git tag -d v0.3
+
+----------------------------------------------------------------------
+
+二十五、远程仓库命令 ✔	
+
+	1、添加远程仓库
+		git remote add origin https://github.com/enjoysea/seaPro.git
+		目前没有什么用，可不看这个
+
+	2、推送master主分支
+		git push -u origin master
+		可简写：git push		
+
+	3、推送其他分支
+		 git push -u origin branch1		
+
+	4、克隆项目到本地
+		git clone https://github.com/enjoysea/seaPro.git
+
+	5、拉取
+		git pull 
+
+	6、克隆远程仓库分支
+		git checkout -b branch1 origin/branch1
+		默认clone的master
+
+	7、删除本地分支
+		git branch -d branch1
+	
+	8、删除远程分支
+		git push origin :branch1
+
+	9、推送标签到远程仓库
+		git push origin v2.0
+
+	10、上传全部标签	
+		git push origin --tags
+
+	11、删除远程仓库的标签	
+		git push origin :refs/tags/v1.0
+
+----------------------------------------------------------------------
+
+二十六、ssh及编辑器命令行使用 ✔
+
+	（一）基本配置
+		1、github网站，头像 → Settings
+
+		2、设置账号与用户名
+			git config --local user.name "aclearsky"
+			git config --local user.email "13552284527@163.com"
+
+		3、打开页面，左侧：SSH and GPG keys
+
+		4、点击右上：New SSH key	
+
+		5、密钥生成：
+			>ssh-keygen -t rsa -C "13552284527@163.com"
+			也就是要填写的用户名	
+
+		6、会问密钥文件存储到哪里
+
+		7、接着按3个回车，默认保存
+
+		8、能看到下面就是给生成的秘钥
+
+		9、将生成的密钥给到管理者
+
+		10、找到生成的文件.ssh，找到.pub，通过记事本打开
+
+		11、将密钥复制给管理者即可，
+			管理者可以将密钥填写在github的Key textarea框中
+			Title 是随便填写的
+
+		12、点击：Add SSH key添加即可	
+
+		13、注意地址与HTTP不同
+			>git@github.com:aclearsky/eagle.git
+			是SSH的
+	
+			在Cloone or download 右侧：USE SSH可以看到，
+			就可以避免每次提交都需要属于用户名与密码
+
+	（二）问题：ssh-keygen 不是内部或外部命令?
+		1、找到：ssh-keygen.exe 所在目录：C:\Program Files\Git\usr\bin
+			参考：https://www.cnblogs.com/sungirl/p/4882832.html
+
+		2、git 生成ssh 密钥:
+			参考：https://blog.csdn.net/qq_31411389/article/details/53518507
+
+----------------------------------------------------------------------
+
+二十七、cmder命令行工具解决乱码 ✔
+	git config --global core.quotepath false
+	
+	quotepath // 引用路径
+
+----------------------------------------------------------------------
+
+二十八、vim编辑模式乱码 ✔	
+	set LANG=zh_CN.UTF-8
+
+----------------------------------------------------------------------
+
+二十九、分支原则 ✔
+	1、要避免在主分支上进行频繁的修改
+	2、主分支只记录大的版本
+	3、开发选择：develop
+	4、如果打补丁或处理bug又会开一个分支topic
+	5、主分支一定要尽量少的提交，让他的主干非常的清晰
+	6、甚至说当前的master主干上，保留带有版本号的commit
+
+----------------------------------------------------------------------
+
+三十、连接github网站管理项目流程 ✔
+	1、配置
+		git config --global user.email "输入你的邮箱"
+		git config --global user.name "输入你的用户名"
+
+	2、如果修改
+		git config --global --replace-all user.email "输入你的邮箱" 
+		git config --global --replace-all user.name "输入你的用户名"
+
+	3、git clone https://github.com/enjoysea/seaPro.git
+
+	4、如果不提示输入用户名与密码，
+		git config --system --unset credential.helper
+
+	5、第一种方法：每次提交前，最好都git pull一下，以防止冲突
+
+	6、git push
+
+	7、另外一种方法详细（推荐）：git fetch ✔
+
+		（1）拉取过来，不是直接合并到我们的分支当中，
+
+		（2）先查看，哪里有冲突
+			git diff master origin/master
+
+		（3）需要手动的去合	
+			git merge origin/master
+
+		（4）选择一下到底选择哪块代码
+
+		（5）重新提交
+			git commit -am "描述信息"
+		（6）推送
+			git push origin master
+
+
+----------------------------------------------------------------------
+
+实战：
+
+一、git比较的不是代码是否一致，才会产生冲突，而是比较的版本号
+	根据当前git仓库的版本号 与 上一次push的版本号是否一致，来决定push是否会冲突
+	（1）如果 当前git仓库的版本号 = 上一次push的版本号 则不会产生冲突
+	（2）如果 当前git仓库的版本号 > 上一次push的版本号 就会产生冲突
+
+
+二、git pull 以后是否就不会再有冲突？
+	1、git pull 拉取的是最新的代码，在本地在没有commit的情况下，肯定不会有冲突
+	2、否则就可能会有冲突
+
+
+三、建议先将本地代码覆盖到本地git环境 → commit → pull → 解决完冲突 → push ✔
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
